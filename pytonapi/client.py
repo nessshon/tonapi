@@ -107,6 +107,18 @@ class BaseClient:
             await asyncio.sleep(0)
             self._session = None
 
+    @property
+    def session(self) -> aiohttp.ClientSession:
+        """Active ``aiohttp.ClientSession``.
+
+        :raises TONAPISessionNotCreatedError: If the session has not been
+            created yet — call ``create_session()`` or use the client as an
+            async context manager first.
+        """
+        if self._session is None or self._session.closed:
+            raise TONAPISessionNotCreatedError(self.__class__.__name__)
+        return self._session
+
     async def __aenter__(self: _Self) -> _Self:
         """Enter the async context manager."""
         await self.create_session()

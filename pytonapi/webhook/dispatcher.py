@@ -106,20 +106,21 @@ class TonapiWebhookDispatcher:
         for event_type, handlers in self._handlers.items():
             if not handlers:
                 continue
-            suffix = self.DEFAULT_SUFFIXES[event_type]
-            local_path = self._path + suffix
-            webhook = await self._client.ensure(f"{self._url}{suffix}")
-            self._tokens[local_path] = webhook.token
+            # One webhook per distinct path (incl. custom ``path=``) so every
+            # path gets its token stored — otherwise auth is silently skipped.
+            for local_path in sorted({path for _, _, path in handlers}):
+                webhook = await self._client.ensure(self._endpoint_for_path(local_path))
+                self._tokens[local_path] = webhook.token
 
-            if event_type is WebhookEventType.ACCOUNT_TX and self._accounts:
-                await webhook.sync_accounts(list(self._accounts))
-            elif event_type is WebhookEventType.MEMPOOL_MSG:
-                await webhook.subscribe_mempool_msg()
-            elif event_type is WebhookEventType.OPCODE_MSG and self._opcodes:
-                for opcode in self._opcodes:
-                    await webhook.subscribe_opcode_msg(opcode)
-            elif event_type is WebhookEventType.NEW_CONTRACTS:
-                await webhook.subscribe_new_contracts()
+                if event_type is WebhookEventType.ACCOUNT_TX and self._accounts:
+                    await webhook.sync_accounts(list(self._accounts))
+                elif event_type is WebhookEventType.MEMPOOL_MSG:
+                    await webhook.subscribe_mempool_msg()
+                elif event_type is WebhookEventType.OPCODE_MSG and self._opcodes:
+                    for opcode in self._opcodes:
+                        await webhook.subscribe_opcode_msg(opcode)
+                elif event_type is WebhookEventType.NEW_CONTRACTS:
+                    await webhook.subscribe_new_contracts()
 
     async def teardown(self, cleanup: bool = False) -> None:
         """Close session and optionally unsubscribe.
@@ -140,22 +141,22 @@ class TonapiWebhookDispatcher:
             for event_type, handlers in self._handlers.items():
                 if not handlers:
                     continue
-                suffix = self.DEFAULT_SUFFIXES[event_type]
-                endpoint = f"{self._url}{suffix}"
-                info = endpoint_map.get(endpoint)
-                if info is None:
-                    continue
-                webhook = TonapiWebhook(self._client, info.id, info.endpoint, info.token)
+                for local_path in sorted({path for _, _, path in handlers}):
+                    endpoint = self._endpoint_for_path(local_path)
+                    info = endpoint_map.get(endpoint)
+                    if info is None:
+                        continue
+                    webhook = TonapiWebhook(self._client, info.id, info.endpoint, info.token)
 
-                if event_type is WebhookEventType.ACCOUNT_TX and self._accounts:
-                    await webhook.unsubscribe(list(self._accounts))
-                elif event_type is WebhookEventType.MEMPOOL_MSG:
-                    await webhook.unsubscribe_mempool_msg()
-                elif event_type is WebhookEventType.OPCODE_MSG and self._opcodes:
-                    for opcode in self._opcodes:
-                        await webhook.unsubscribe_opcode_msg(opcode)
-                elif event_type is WebhookEventType.NEW_CONTRACTS:
-                    await webhook.unsubscribe_new_contracts()
+                    if event_type is WebhookEventType.ACCOUNT_TX and self._accounts:
+                        await webhook.unsubscribe(list(self._accounts))
+                    elif event_type is WebhookEventType.MEMPOOL_MSG:
+                        await webhook.unsubscribe_mempool_msg()
+                    elif event_type is WebhookEventType.OPCODE_MSG and self._opcodes:
+                        for opcode in self._opcodes:
+                            await webhook.unsubscribe_opcode_msg(opcode)
+                    elif event_type is WebhookEventType.NEW_CONTRACTS:
+                        await webhook.unsubscribe_new_contracts()
 
         await self._client.close_session()
 
@@ -177,9 +178,18 @@ class TonapiWebhookDispatcher:
         """
         return self._path + self.DEFAULT_SUFFIXES[event_type]
 
+    def _endpoint_for_path(self, path: str) -> str:
+        """Build the absolute webhook endpoint URL for a local path.
+
+        :param path: Local URL path component.
+        :return: Absolute endpoint URL.
+        """
+        parsed = urlparse(self._url)
+        return parsed._replace(path=path, params="", query="", fragment="").geturl()
+
     def _build_path_map(self) -> dict[str, WebhookEventType]:
-        """Build reverse mapping from path to event type."""
-        return {handlers[0][2]: et for et, handlers in self._handlers.items() if handlers}
+        """Build reverse mapping from every registered path to its event type."""
+        return {path: et for et, handlers in self._handlers.items() for _, _, path in handlers}
 
     def account_tx(
         self,

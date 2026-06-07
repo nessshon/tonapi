@@ -209,6 +209,61 @@ class TestTonapiWebhookDispatcher(IsolatedAsyncioTestCase):
         with self.assertRaises(TONAPIError):
             await dispatcher.process("/account-tx", self._make_account_tx_data())
 
+    async def test_setup_enforces_auth_on_custom_path(self) -> None:
+        class _FakeWebhook:
+            def __init__(self, token: str, endpoint: str) -> None:
+                self.token = token
+                self.endpoint = endpoint
+
+            async def sync_accounts(self, accounts: list) -> None:
+                pass
+
+        class _FakeClient:
+            def __init__(self) -> None:
+                self.endpoints: list[str] = []
+
+            async def create_session(self) -> None:
+                pass
+
+            async def ensure(self, endpoint: str) -> "_FakeWebhook":
+                self.endpoints.append(endpoint)
+                return _FakeWebhook("secret-token", endpoint)
+
+            async def close_session(self) -> None:
+                pass
+
+        client = _FakeClient()
+        dispatcher = TonapiWebhookDispatcher(
+            "https://victim.example/hook",
+            client=client,  # type: ignore[arg-type]
+            accounts=["0:victim"],
+        )
+        received = []
+
+        @dispatcher.account_tx("0:victim", path="/hook/custom")
+        async def handler(event: AccountTxEvent) -> None:
+            received.append(event.tx_hash)
+
+        await dispatcher.setup()
+
+        # The custom path must be registered with TONAPI and have a stored token.
+        self.assertIn("/hook/custom", dispatcher._tokens)
+        self.assertIn("https://victim.example/hook/custom", client.endpoints)
+
+        data = self._make_account_tx_data(account_id="0:victim")
+
+        # Missing auth must be rejected.
+        with self.assertRaises(TONAPIError):
+            await dispatcher.process("/hook/custom", data)
+
+        # Wrong auth must be rejected.
+        with self.assertRaises(TONAPIError):
+            await dispatcher.process("/hook/custom", data, authorization="Bearer wrong")
+
+        # Valid auth is accepted.
+        await dispatcher.process("/hook/custom", data, authorization="Bearer secret-token")
+        self.assertEqual(received, ["deadbeef"])
+
     async def test_register_invalid_event_key(self) -> None:
         dispatcher = TonapiWebhookDispatcher()
 

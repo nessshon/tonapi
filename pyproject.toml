@@ -53,7 +53,7 @@ pytonapi = "pytonapi.cli:main"
 [project.urls]
 Homepage = "https://github.com/nessshon/tonapi/"
 Examples = "https://github.com/nessshon/tonapi/tree/main/examples/"
-Documentation = "https://tonapi.ness.su/"
+Documentation = "https://tonapi.ness.uz/"
 
 [project.optional-dependencies]
 dev = [

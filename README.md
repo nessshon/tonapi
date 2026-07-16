@@ -43,8 +43,8 @@ pip install pytonapi
 
 ## Documentation
 
-[Documentation](https://tonapi.ness.su/) — API reference, streaming, and webhooks guides.  
-[llms.txt](https://tonapi.ness.su/llms.txt) — auto-generated machine-readable docs for AI tools.
+[Documentation](https://tonapi.ness.uz/) — API reference, streaming, and webhooks guides.  
+[llms.txt](https://tonapi.ness.uz/llms.txt) — auto-generated machine-readable docs for AI tools.
 
 ## Examples
 

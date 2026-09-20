@@ -1,6 +1,6 @@
 {
   "name": "tonapi",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "Claude Code plugin for TON API — REST API, Streaming, and Webhooks for TON blockchain.",
   "author": {
     "name": "nessshon"

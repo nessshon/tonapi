@@ -106,6 +106,7 @@
               "rest/get_account_public_key_get",
               "rest/get_account_multisigs_get",
               "rest/get_account_diff_get",
+              "rest/get_account_defi_assets_get",
               "rest/get_account_extra_currency_history_by_id_get",
               "rest/get_jetton_account_history_by_id_get",
               "rest/emulate_message_to_account_event_post"
@@ -128,6 +129,7 @@
               "rest/get_blockchain_validators_get",
               "rest/get_blockchain_masterchain_head_get",
               "rest/get_blockchain_raw_account_get",
+              "rest/get_blockchain_raw_accounts_post",
               "rest/get_blockchain_account_transactions_get",
               "rest/exec_get_method_for_blockchain_account_get",
               "rest/exec_get_method_with_body_for_blockchain_account_post",
@@ -218,6 +220,13 @@
             ]
           },
           {
+            "group": "Migration",
+            "pages": [
+              "rest/get_migration_wallets_post",
+              "rest/prepare_migration_post"
+            ]
+          },
+          {
             "group": "Multisig",
             "pages": [
               "rest/get_multisig_account_get",
@@ -249,6 +258,16 @@
               "rest/get_rates_get",
               "rest/get_chart_rates_get",
               "rest/get_markets_rates_get"
+            ]
+          },
+          {
+            "group": "Rewards",
+            "pages": [
+              "rest/get_validators_get",
+              "rest/get_validation_rounds_get",
+              "rest/get_round_rewards_get",
+              "rest/get_rewards_stats_get",
+              "rest/get_rewards_apy_get"
             ]
           },
           {

@@ -19,14 +19,23 @@ class ImagePreview(BaseModel):
     url: str
 
 
+class NftCollectionMetadataStatus(BaseModel):
+    url: str | None = Field(default=None)
+    is_broken: bool | None = Field(default=None)
+    last_refresh_try: int | None = Field(default=None)
+    last_refresh_success: int | None = Field(default=None)
+
+
 class NftCollection(BaseModel):
     address: str
     next_item_index: int
     raw_collection_content: str
     approved_by: NftApprovedBy
+    trust: TrustType
     owner: AccountAddress | None = Field(default=None)
     metadata: dict[str, t.Any] | None = Field(default=None)
     previews: list[ImagePreview] | None = Field(default=None)
+    metadata_status: NftCollectionMetadataStatus | None = Field(default=None)
 
 
 class NftCollections(BaseModel):

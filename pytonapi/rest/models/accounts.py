@@ -9,6 +9,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from pytonapi.rest.models._enums import (
     AccountStatus,
     CurrencyType,
+    DefiAssetType,
     ExecGetMethodArgType,
     JettonVerificationType,
     PoolImplementationType,
@@ -59,6 +60,7 @@ class ActionSimplePreview(BaseModel):
     accounts: list[AccountAddress]
     action_image: str | None = Field(default=None)
     value: str | None = Field(default=None)
+    fiat_value: str | None = Field(default=None)
     value_image: str | None = Field(default=None)
 
 
@@ -85,6 +87,11 @@ class AuctionBidAction(BaseModel):
     nft: NftItem | None = Field(default=None)
 
 
+class BuyXTRAction(BaseModel):
+    recipient: AccountAddress
+    amount: str
+
+
 class ContractDeployAction(BaseModel):
     address: str
     interfaces: list[str]
@@ -95,6 +102,7 @@ class DepositStakeAction(BaseModel):
     staker: AccountAddress
     pool: AccountAddress
     implementation: PoolImplementationType
+    stake_meta: Price | None = Field(default=None)
 
 
 class Protocol(BaseModel):
@@ -106,6 +114,11 @@ class DepositTokenStakeAction(BaseModel):
     staker: AccountAddress
     protocol: Protocol
     stake_meta: Price | None = Field(default=None)
+
+
+class DepositXTRAction(BaseModel):
+    recipient: AccountAddress
+    amount: str
 
 
 class DomainRenewAction(BaseModel):
@@ -169,10 +182,17 @@ class FlawedJettonTransferAction(BaseModel):
     refund: Refund | None = Field(default=None)
 
 
+class GasRelayFee(BaseModel):
+    jetton: JettonPreview
+    amount: str
+
+
 class GasRelayAction(BaseModel):
     amount: int
     relayer: AccountAddress
     target: AccountAddress
+    is_battery: bool | None = Field(default=None)
+    relayer_fee: GasRelayFee | None = Field(default=None)
 
 
 class JettonBurnAction(BaseModel):
@@ -197,6 +217,8 @@ class JettonSwapAction(BaseModel):
     router: AccountAddress
     ton_in: int | None = Field(default=None)
     ton_out: int | None = Field(default=None)
+    gram_in: int | None = Field(default=None)
+    gram_out: int | None = Field(default=None)
     jetton_master_in: JettonPreview | None = Field(default=None)
     jetton_master_out: JettonPreview | None = Field(default=None)
 
@@ -244,6 +266,18 @@ class NftPurchaseAction(BaseModel):
     buyer: AccountAddress
 
 
+class OraclePriceFeed(BaseModel):
+    id: str
+    display_symbol: str
+    rate: float | None = Field(default=None)
+
+
+class OracleRequestAction(BaseModel):
+    requester: AccountAddress
+    response_to: AccountAddress
+    price_feeds: list[OraclePriceFeed]
+
+
 class Metadata(BaseModel):
     encrypted_binary: str
     decryption_key: str | None = Field(default=None)
@@ -270,8 +304,9 @@ class SetSignatureAllowedAction(BaseModel):
 class SmartContractAction(BaseModel):
     executor: AccountAddress
     contract: AccountAddress
-    ton_attached: int
+    gram_attached: int
     operation: str
+    ton_attached: int | None = Field(default=None)
     payload: str | None = Field(default=None)
     refund: Refund | None = Field(default=None)
 
@@ -314,12 +349,18 @@ class WithdrawStakeRequestAction(BaseModel):
     pool: AccountAddress
     implementation: PoolImplementationType
     amount: int | None = Field(default=None)
+    stake_meta: Price | None = Field(default=None)
 
 
 class WithdrawTokenStakeRequestAction(BaseModel):
     staker: AccountAddress
     protocol: Protocol
     stake_meta: Price | None = Field(default=None)
+
+
+class WithdrawXTRAction(BaseModel):
+    user: AccountAddress
+    amount: str
 
 
 class Action(BaseModel):
@@ -359,6 +400,10 @@ class Action(BaseModel):
         alias="WithdrawTokenStakeRequest", default=None
     )
     liquidity_deposit: LiquidityDepositAction | None = Field(alias="LiquidityDeposit", default=None)
+    oracle_request: OracleRequestAction | None = Field(alias="OracleRequest", default=None)
+    withdraw_xtr: WithdrawXTRAction | None = Field(alias="WithdrawXTR", default=None)
+    deposit_xtr: DepositXTRAction | None = Field(alias="DepositXTR", default=None)
+    buy_xtr: BuyXTRAction | None = Field(alias="BuyXTR", default=None)
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -385,6 +430,40 @@ class Accounts(BaseModel):
     accounts: list[Account]
 
 
+class DefiLockedAsset(BaseModel):
+    type: str
+    jetton: JettonPreview | None = Field(default=None)
+
+
+class DefiProvider(BaseModel):
+    name: str
+    description: str
+    link: str
+    icon: str
+    card: str
+    full: str
+    tag: str
+    miniapp_link: str | None = Field(default=None)
+
+
+class DefiAsset(BaseModel):
+    type: DefiAssetType
+    amount: str
+    defi_provider: DefiProvider
+    locked_asset: DefiLockedAsset
+    pool_address: str | None = Field(default=None)
+    asset_address: str | None = Field(default=None)
+
+
+class DefiAssets(BaseModel):
+    assets: list[DefiAsset]
+
+
+class DefiLiquidPoolAssets(BaseModel):
+    asset0: DefiLockedAsset
+    asset1: DefiLockedAsset
+
+
 class DnsExpiring(BaseModel):
     items: list[t.Any]
 
@@ -406,11 +485,19 @@ class FoundAccounts(BaseModel):
     addresses: list[t.Any]
 
 
+class JettonAssetInfo(BaseModel):
+    token_type: DefiAssetType
+    defi_provider: DefiProvider
+    type: DefiAssetType | None = Field(default=None)
+    pool_assets: DefiLiquidPoolAssets | None = Field(default=None)
+
+
 class JettonBalance(BaseModel):
     balance: str
     wallet_address: AccountAddress
     jetton: JettonPreview
     price: TokenRates | None = Field(default=None)
+    defi_asset: JettonAssetInfo | None = Field(default=None)
     extensions: list[str] | None = Field(default=None)
     lock: t.Any | None = Field(default=None)
 

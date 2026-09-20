@@ -31,9 +31,10 @@ class JettonQuantity(BaseModel):
 
 class Risk(BaseModel):
     transfer_all_remaining_balance: bool
-    ton: int
+    gram: int
     jettons: list[JettonQuantity]
     nfts: list[NftItem]
+    ton: int | None = Field(default=None)
     total_equivalent: float | None = Field(default=None)
 
 

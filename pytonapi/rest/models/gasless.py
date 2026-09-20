@@ -17,6 +17,7 @@ class GaslessConfig(BaseModel):
 
 class GaslessTx(BaseModel):
     protocol_name: str
+    external: str | None = Field(default=None)
 
 
 class SignRawMessage(BaseModel):

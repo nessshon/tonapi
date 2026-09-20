@@ -36,6 +36,15 @@ class CurrencyType(str, Enum):
     fiat = "fiat"
 
 
+class DefiAssetType(str, Enum):
+    staking = "staking"
+    lending_supply = "lending_supply"
+    lending_borrow = "lending_borrow"
+    liquid_staking = "liquid_staking"
+    liquid_pool = "liquid_pool"
+    yield_token = "yield_token"
+
+
 class ExecGetMethodArgType(str, Enum):
     nan = "nan"
     null = "null"
@@ -57,6 +66,8 @@ class PoolImplementationType(str, Enum):
     whales = "whales"
     tf = "tf"
     liquidTF = "liquidTF"
+    ffvault = "ffvault"
+    hipo = "hipo"
 
 
 class TransactionType(str, Enum):

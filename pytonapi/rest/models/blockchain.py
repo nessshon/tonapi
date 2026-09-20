@@ -172,6 +172,7 @@ class BlockchainConfig(BaseModel):
     p25: t.Any | None = Field(alias="25", default=None)
     p28: t.Any | None = Field(alias="28", default=None)
     p29: t.Any | None = Field(alias="29", default=None)
+    p30: t.Any | None = Field(alias="30", default=None)
     p31: t.Any | None = Field(alias="31", default=None)
     p32: ValidatorsSet | None = Field(alias="32", default=None)
     p33: ValidatorsSet | None = Field(alias="33", default=None)
@@ -208,6 +209,10 @@ class BlockchainRawAccount(BaseModel):
     last_transaction_hash: str | None = Field(default=None)
     frozen_hash: str | None = Field(default=None)
     libraries: list[t.Any] | None = Field(default=None)
+
+
+class BlockchainRawAccounts(BaseModel):
+    accounts: list[BlockchainRawAccount]
 
 
 class ComputePhase(BaseModel):
@@ -256,10 +261,12 @@ class GasLimitPrices(BaseModel):
 class JettonBridgePrices(BaseModel):
     bridge_burn_fee: int
     bridge_mint_fee: int
-    wallet_min_tons_for_storage: int
+    wallet_min_gram_for_storage: int
     wallet_gas_consumption: int
-    minter_min_tons_for_storage: int
+    minter_min_gram_for_storage: int
     discover_gas_consumption: int
+    wallet_min_tons_for_storage: int | None = Field(default=None)
+    minter_min_tons_for_storage: int | None = Field(default=None)
 
 
 class Oracle(BaseModel):
@@ -340,6 +347,16 @@ class MsgForwardPrices(BaseModel):
     ihr_price_factor: int
     first_frac: int
     next_frac: int
+
+
+class NewConsensusConfig(BaseModel):
+    flags: int
+    use_quic: bool
+    slots_per_leader_window: int
+    target_rate_ms: int | None = Field(default=None)
+    first_block_timeout_ms: int | None = Field(default=None)
+    max_leader_window_desync: int | None = Field(default=None)
+    noncritical_params: dict[str, int] | None = Field(default=None)
 
 
 class OracleBridgeParams(BaseModel):

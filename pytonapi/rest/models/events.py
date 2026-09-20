@@ -12,8 +12,9 @@ if t.TYPE_CHECKING:
 
 class ValueFlow(BaseModel):
     account: AccountAddress
-    ton: int
+    gram: int
     fees: int
+    ton: int | None = Field(default=None)
     jettons: list[t.Any] | None = Field(default=None)
 
 

@@ -12,6 +12,7 @@ from pytonapi.rest.models import (
     BlockchainConfig,
     BlockchainLibrary,
     BlockchainRawAccount,
+    BlockchainRawAccounts,
     MethodExecutionResult,
     RawBlockchainConfig,
     ReducedBlocks,
@@ -117,18 +118,27 @@ class BlockchainResource(BaseResource):
     async def get_masterchain_transactions(
         self,
         masterchain_seqno: int,
+        offset: int = 0,
+        limit: int | None = None,
     ) -> Transactions:
         """Get all transactions in all shards and workchains between target and previous masterchain block
         according to shards last blocks snapshot in masterchain. We don't recommend to build your app around
         this method because it has problem with scalability and will work very slow in the future.
 
         :param masterchain_seqno: Masterchain block seqno.
+        :param offset: Offset.
+        :param limit: Limit.
         :return: Transactions
         """
         path = f"/v2/blockchain/masterchain/{masterchain_seqno}/transactions"
+        params = {
+            "offset": offset,
+            "limit": limit,
+        }
         return await self._request(
             method="GET",
             path=path,
+            params=params,
             response_model=Transactions,
         )
 
@@ -254,6 +264,23 @@ class BlockchainResource(BaseResource):
             method="GET",
             path=path,
             response_model=BlockchainRawAccount,
+        )
+
+    async def get_raw_accounts(
+        self,
+        body: dict[str, t.Any],
+    ) -> BlockchainRawAccounts:
+        """Get low-level information about several accounts taken directly from the blockchain.
+
+        :param body: Request body.
+        :return: BlockchainRawAccounts
+        """
+        path = "/v2/blockchain/accounts/_bulk"
+        return await self._request(
+            method="POST",
+            path=path,
+            body=body,
+            response_model=BlockchainRawAccounts,
         )
 
     async def get_account_transactions(

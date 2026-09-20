@@ -9,6 +9,7 @@ from pytonapi.rest.models import (
     AccountEvent,
     AccountEvents,
     Accounts,
+    DefiAssets,
     DnsExpiring,
     DomainNames,
     FoundAccounts,
@@ -90,7 +91,7 @@ class AccountsResource(BaseResource):
         """Get all Jettons balances by owner address.
 
         :param account_id: Account ID.
-        :param currencies: Accept ton and all possible fiat currencies, separated by commas.
+        :param currencies: Accept gram and all possible fiat currencies, separated by commas.
         :param supported_extensions: Comma separated list supported extensions.
         :param limit: Limit.
         :param offset: Offset.
@@ -98,8 +99,8 @@ class AccountsResource(BaseResource):
         """
         path = f"/v2/accounts/{account_id}/jettons"
         params = {
-            "currencies": currencies,
-            "supported_extensions": supported_extensions,
+            "currencies": ",".join(currencies) if currencies else None,
+            "supported_extensions": ",".join(supported_extensions) if supported_extensions else None,
             "limit": limit,
             "offset": offset,
         }
@@ -121,14 +122,14 @@ class AccountsResource(BaseResource):
 
         :param account_id: Account ID.
         :param jetton_id: Jetton ID.
-        :param currencies: Accept ton and all possible fiat currencies, separated by commas.
+        :param currencies: Accept gram and all possible fiat currencies, separated by commas.
         :param supported_extensions: Comma separated list supported extensions.
         :return: JettonBalance
         """
         path = f"/v2/accounts/{account_id}/jettons/{jetton_id}"
         params = {
-            "currencies": currencies,
-            "supported_extensions": supported_extensions,
+            "currencies": ",".join(currencies) if currencies else None,
+            "supported_extensions": ",".join(supported_extensions) if supported_extensions else None,
         }
         return await self._request(
             method="GET",
@@ -213,7 +214,7 @@ class AccountsResource(BaseResource):
         :param collection: Nft collection.
         :param limit: Limit.
         :param offset: Offset.
-        :param indirect_ownership: Selling nft items in ton implemented usually via transfer items to special selling
+        :param indirect_ownership: Selling nft items in TON implemented usually via transfer items to special selling
             account. This option enables including items which owned not directly.
         :return: NftItems
         """
@@ -456,6 +457,23 @@ class AccountsResource(BaseResource):
             method="GET",
             path=path,
             params=params,
+        )
+
+    async def get_account_defi_assets(
+        self,
+        account_id: str,
+    ) -> DefiAssets:
+        """Return DeFi assets locked in custom smart contracts: currently returns TON Whales staking and EVAA
+        lending positions.
+
+        :param account_id: Account ID.
+        :return: DefiAssets
+        """
+        path = f"/v2/accounts/{account_id}/defi/assets"
+        return await self._request(
+            method="GET",
+            path=path,
+            response_model=DefiAssets,
         )
 
     async def get_account_extra_currency_history_by_id(

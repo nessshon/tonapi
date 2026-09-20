@@ -17,14 +17,14 @@ class RatesResource(BaseResource):
     ) -> t.Any:
         """Get the token price in the chosen currency for display only. Don't use this for financial transactions.
 
-        :param tokens: Accept ton and jetton master addresses, separated by commas.
-        :param currencies: Accept ton and all possible fiat currencies, separated by commas.
+        :param tokens: Accept gram and jetton master addresses, separated by commas.
+        :param currencies: Accept gram and all possible fiat currencies, separated by commas.
         :return: dict[str, t.Any]
         """
         path = "/v2/rates"
         params = {
-            "tokens": tokens,
-            "currencies": currencies,
+            "tokens": ",".join(tokens),
+            "currencies": ",".join(currencies),
         }
         return await self._request(
             method="GET",
@@ -66,7 +66,7 @@ class RatesResource(BaseResource):
     async def get_markets_rates(
         self,
     ) -> t.Any:
-        """Get the TON price from markets.
+        """Get the Gram price from markets.
 
         :return: dict[str, t.Any]
         """

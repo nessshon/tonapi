@@ -15,17 +15,22 @@ class JettonsResource(BaseResource):
         self,
         limit: int = 100,
         offset: int = 0,
+        last_account_id: str | None = None,
     ) -> Jettons:
         """Get a list of all indexed jetton masters in the blockchain.
 
         :param limit: Limit.
-        :param offset: Offset.
+        :param offset: Deprecated: pagination is based on a daily snapshot, so some new jettons may not appear yet. Use
+            `last_account_id` for real-time pagination instead.
+        :param last_account_id: Cursor for pagination, always resolved live. Pass the `metadata.address` of the last
+            jetton master from the previous page to get the next page. Preferred over `offset`.
         :return: Jettons
         """
         path = "/v2/jettons"
         params = {
             "limit": limit,
             "offset": offset,
+            "last_account_id": last_account_id,
         }
         return await self._request(
             method="GET",
@@ -72,18 +77,25 @@ class JettonsResource(BaseResource):
         account_id: str,
         limit: int = 1000,
         offset: int = 0,
+        sort_by: str = "balance",
+        last_account_id: str | None = None,
     ) -> JettonHolders:
         """Get jetton's holders.
 
         :param account_id: Account ID.
         :param limit: Limit.
-        :param offset: Offset.
+        :param offset: Used only with sort_by=balance; has limit of 9000 rows.
+        :param sort_by: Sort by.
+        :param last_account_id: Used only with sort_by=address: the account_id of the last holder from the previous
+            page, to fetch the next page after it.
         :return: JettonHolders
         """
         path = f"/v2/jettons/{account_id}/holders"
         params = {
             "limit": limit,
             "offset": offset,
+            "sort_by": sort_by,
+            "last_account_id": last_account_id,
         }
         return await self._request(
             method="GET",

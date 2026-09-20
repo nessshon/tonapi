@@ -153,6 +153,16 @@ def _format_result(result: t.Any) -> str:
     return str(result)
 
 
+def _coerce_list_kwargs(method: t.Callable[..., t.Any], kwargs: dict[str, t.Any]) -> None:
+    """Wrap single CLI values in a list for parameters annotated as lists."""
+    for name, hint in t.get_type_hints(method).items():
+        value = kwargs.get(name)
+        if value is None or isinstance(value, list):
+            continue
+        if any(t.get_origin(variant) is list for variant in (hint, *t.get_args(hint))):
+            kwargs[name] = [value]
+
+
 async def _run_rest(
     resource: str,
     method: str,
@@ -171,6 +181,7 @@ async def _run_rest(
             available = [a for a in dir(resource_obj) if not a.startswith("_") and callable(getattr(resource_obj, a))]
             _err(f"Error: unknown method '{method}'. Available: {', '.join(available)}")
 
+        _coerce_list_kwargs(method_fn, kwargs)
         result = await method_fn(**kwargs)
         sys.stdout.write(_format_result(result) + "\n")
 

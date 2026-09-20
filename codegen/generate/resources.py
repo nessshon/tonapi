@@ -106,6 +106,24 @@ def _format_docstring(
     return lines
 
 
+def _param_value_expr(param: dict, py_name: str) -> str:
+    """Build the expression producing a parameter's wire value.
+
+    Array parameters declared with ``explode: false`` are joined into a
+    comma-separated string: the API rejects them as repeated query keys.
+
+    :param param: resolved parameter dict.
+    :param py_name: Python name of the method argument.
+    :return: expression string.
+    """
+    schema = param.get("schema") or {}
+    if schema.get("type") == "array" and param.get("explode") is False:
+        if param.get("required", False):
+            return f'",".join({py_name})'
+        return f'",".join({py_name}) if {py_name} else None'
+    return py_name
+
+
 def _build_dict_literal(
     params: list[dict],
     param_map: dict[str, str],
@@ -123,12 +141,12 @@ def _build_dict_literal(
     if len(params) == 1:
         api_name = params[0]["name"]
         py_name = param_map[api_name]
-        return [f'        {var_name} = {{"{api_name}": {py_name}}}']
+        return [f'        {var_name} = {{"{api_name}": {_param_value_expr(params[0], py_name)}}}']
     lines = [f"        {var_name} = {{"]
     for p in params:
         api_name = p["name"]
         py_name = param_map[api_name]
-        lines.append(f'            "{api_name}": {py_name},')
+        lines.append(f'            "{api_name}": {_param_value_expr(p, py_name)},')
     lines.append("        }")
     return lines
 
@@ -266,7 +284,7 @@ def _generate_method(
     if query_params:
         req_parts.append("            params=params,")
     if body_schema_ref:
-        req_parts.append("            body=body.model_dump(),")
+        req_parts.append("            body=body.model_dump(by_alias=True, exclude_none=True),")
     elif body_is_raw:
         req_parts.append("            body=body,")
     if header_params:

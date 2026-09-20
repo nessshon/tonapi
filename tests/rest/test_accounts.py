@@ -5,6 +5,7 @@ from pytonapi.rest.models import (
     AccountEvent,
     AccountEvents,
     Accounts,
+    DefiAssets,
     DnsExpiring,
     DomainNames,
     FoundAccounts,
@@ -154,6 +155,13 @@ class TestAccountsResource(TestTonapiRest):
             p["end_date"],
         )
         self.assertIsInstance(response, dict)
+
+    async def test_get_account_defi_assets(self):
+        p = params("accounts.get_account_defi_assets")
+        response = await self.tonapi.accounts.get_account_defi_assets(
+            p["account_id"],
+        )
+        self.assertIsInstance(response, DefiAssets)
 
     async def test_get_account_extra_currency_history_by_id(self):
         p = params("accounts.get_account_extra_currency_history_by_id")

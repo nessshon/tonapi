@@ -7,6 +7,7 @@ from pytonapi.rest.models import (
     BlockchainBlockShards,
     BlockchainConfig,
     BlockchainRawAccount,
+    BlockchainRawAccounts,
     MethodExecutionResult,
     RawBlockchainConfig,
     ReducedBlocks,
@@ -111,6 +112,13 @@ class TestBlockchainResource(TestTonapiRest):
             p["account_id"],
         )
         self.assertIsInstance(response, BlockchainRawAccount)
+
+    async def test_get_raw_accounts(self):
+        p = params("blockchain.get_raw_accounts")
+        response = await self.tonapi.blockchain.get_raw_accounts(
+            body=p["body"],
+        )
+        self.assertIsInstance(response, BlockchainRawAccounts)
 
     async def test_get_account_transactions(self):
         p = params("blockchain.get_account_transactions")

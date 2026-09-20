@@ -64,6 +64,9 @@ TEST_DATA: dict[str, dict[str, object]] = {
         "start_date": int(time.time()) - 84000,
         "end_date": int(time.time()),
     },
+    "accounts.get_account_defi_assets": {
+        "account_id": "UQCDrgGaI6gWK-qlyw69xWZosurGxrpRgIgSkVsgahUtxZR0",
+    },
     "accounts.get_account_extra_currency_history_by_id": {
         "account_id": "UQCDrgGaI6gWK-qlyw69xWZosurGxrpRgIgSkVsgahUtxZR0",
         "id": 239,
@@ -114,6 +117,9 @@ TEST_DATA: dict[str, dict[str, object]] = {
     },
     "blockchain.get_raw_account": {
         "account_id": "UQCDrgGaI6gWK-qlyw69xWZosurGxrpRgIgSkVsgahUtxZR0",
+    },
+    "blockchain.get_raw_accounts": {
+        "body": {"account_ids": ["UQCDrgGaI6gWK-qlyw69xWZosurGxrpRgIgSkVsgahUtxZR0"]},
     },
     "blockchain.get_account_transactions": {
         "account_id": "UQCDrgGaI6gWK-qlyw69xWZosurGxrpRgIgSkVsgahUtxZR0",
@@ -261,6 +267,12 @@ TEST_DATA: dict[str, dict[str, object]] = {
     "lite_server.get_raw_shard_block_proof": {
         "block_id": "(-1,8000000000000000,58001805,d9ac6be1c58065a92f88279c5947279f43845920cb2aa277e035ab7f985cecec,eb27e90a726866bd6b4700f9d00c38c795942895f0f3884ca84a0537f724a831)",
     },
+    "migration.get_wallets": {
+        "body": {"account_ids": ["UQCDrgGaI6gWK-qlyw69xWZosurGxrpRgIgSkVsgahUtxZR0"]},
+    },
+    # "migration.prepare_migration": {
+    #     "body": {"from": "0:97264395BD65A255A429B11326C84128B7D70FFED7949ABAE3036D506BA38621", "to": "0:97264395BD65A255A429B11326C84128B7D70FFED7949ABAE3036D506BA38621", "currency": "USD", "public_key": "29c1a72938b8f4f1d4e64f1e3f73e4b0e60f9b0c0e0d0e0f0a0b0c0d0e0f0a0b0", "gas_payer": "", "gas_jetton_master": "0:97264395BD65A255A429B11326C84128B7D70FFED7949ABAE3036D506BA38621"},
+    # },
     # "multisig.get_account": {
     #     "account_id": "",
     # },

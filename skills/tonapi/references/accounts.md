@@ -1,6 +1,6 @@
 # Accounts
 
-21 methods from `tonapi.accounts`:
+22 methods from `tonapi.accounts`:
 
 ## get_accounts
 
@@ -65,7 +65,7 @@ Get jetton balances for an account.
 |-------|------|----------|---------|-------------|
 | account_id | str | yes | — | Account address in any form |
 | currencies | list[str] \| None | no | None | Currencies for balance conversion |
-| supported_extensions | list[str] \| None | no | None | Supported jetton extensions filter |
+| supported_extensions | list[str] \| None | no | None | Supported jetton extensions filter (`["defi"]` adds `defi_asset` to balances) |
 | limit | int | no | 1000 | Max results |
 | offset | int | no | 0 | Pagination offset |
 
@@ -88,7 +88,7 @@ Get single jetton balance for an account.
 | account_id | str | yes | — | Account address in any form |
 | jetton_id | str | yes | — | Jetton master address |
 | currencies | list[str] \| None | no | None | Currencies for balance conversion |
-| supported_extensions | list[str] \| None | no | None | Supported jetton extensions filter |
+| supported_extensions | list[str] \| None | no | None | Supported jetton extensions filter (`["defi"]` adds `defi_asset` to balances) |
 
 Returns: `JettonBalance`
 
@@ -361,6 +361,24 @@ python3 ${CLAUDE_SKILL_DIR}/scripts/run.py accounts get_account_diff --account-i
 
 ```python
 result = await tonapi.accounts.get_account_diff("EQ...", start_date=1700000000, end_date=1700100000)
+```
+
+## get_account_defi_assets
+
+Get DeFi assets locked in custom smart contracts (TON Whales staking, EVAA lending positions).
+
+| Param | Type | Required | Default | Description |
+|-------|------|----------|---------|-------------|
+| account_id | str | yes | — | Account address in any form |
+
+Returns: `DefiAssets`
+
+```bash
+python3 ${CLAUDE_SKILL_DIR}/scripts/run.py accounts get_account_defi_assets --account-id EQ...
+```
+
+```python
+result = await tonapi.accounts.get_account_defi_assets("EQ...")
 ```
 
 ## get_account_extra_currency_history_by_id

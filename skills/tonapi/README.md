@@ -60,10 +60,12 @@ skills/tonapi/
 │   ├── gasless.md             — gasless transfers
 │   ├── jettons.md             — jetton info, holders, transfers
 │   ├── lite_server.md         — raw liteserver operations
+│   ├── migration.md           — wallet migration, migratable assets
 │   ├── multisig.md            — multisig wallets, orders
 │   ├── nft.md                 — NFT collections, items, history
 │   ├── purchases.md           — purchase history
 │   ├── rates.md               — token prices, charts, markets
+│   ├── rewards.md             — validators, validation rounds, rewards, APY
 │   ├── staking.md             — staking pools, nominators
 │   ├── storage.md             — TON storage providers
 │   ├── traces.md              — execution traces

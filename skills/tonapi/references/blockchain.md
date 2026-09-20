@@ -1,6 +1,6 @@
 # Blockchain
 
-22 methods from `tonapi.blockchain`:
+23 methods from `tonapi.blockchain`:
 
 ## get_reduced_blockchain_blocks
 
@@ -92,11 +92,13 @@ Get masterchain transactions.
 | Param | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
 | masterchain_seqno | int | yes | — | Masterchain block seqno |
+| offset | int | no | 0 | Pagination offset |
+| limit | int \| None | no | None | Max results |
 
 Returns: `Transactions`
 
 ```python
-result = await tonapi.blockchain.get_masterchain_transactions(12345)
+result = await tonapi.blockchain.get_masterchain_transactions(12345, limit=100)
 ```
 
 ## get_config_from_block
@@ -225,6 +227,24 @@ python3 ${CLAUDE_SKILL_DIR}/scripts/run.py blockchain get_raw_account --account-
 
 ```python
 result = await tonapi.blockchain.get_raw_account("EQ...")
+```
+
+## get_raw_accounts
+
+Get raw data for several accounts from blockchain.
+
+| Param | Type | Required | Default | Description |
+|-------|------|----------|---------|-------------|
+| body | dict | yes | — | Request body with `account_ids` list |
+
+Returns: `BlockchainRawAccounts`
+
+```bash
+python3 ${CLAUDE_SKILL_DIR}/scripts/run.py blockchain get_raw_accounts --body '{"account_ids":["EQ...","EQ..."]}'
+```
+
+```python
+result = await tonapi.blockchain.get_raw_accounts(body={"account_ids": ["EQ...", "EQ..."]})
 ```
 
 ## get_account_transactions

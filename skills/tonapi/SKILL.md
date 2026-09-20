@@ -2,7 +2,8 @@
 name: tonapi
 description: >
   Work with TON blockchain via the tonapi Python SDK — query accounts,
-  transactions, jettons, NFTs, staking, DNS, emulate messages, subscribe to
+  transactions, jettons, NFTs, staking, validator rewards, DNS, prepare wallet
+  migration, emulate messages, subscribe to
   real-time events, and manage webhooks. Use this skill whenever the user
   mentions TONAPI, tonapi.io, TON blockchain data, wallet balance, jetton
   transfers, NFT collections, or wants to interact with TON via TONAPI.
@@ -43,10 +44,12 @@ A key unlocks higher rate limits for production use. Get one at [tonconsole.com]
 | Gasless transfers                              | `references/gasless.md`        | `gasless config`                                    |
 | Jetton info, holders, transfers                | `references/jettons.md`        | `jettons get_jetton_info --account-id EQ...`        |
 | Raw liteserver operations                      | `references/lite_server.md`    | `lite_server get_raw_masterchain_info`              |
+| Wallet migration, migratable assets            | `references/migration.md`      | `migration get_wallets --body {...}`                |
 | Multisig wallets, orders                       | `references/multisig.md`       | `multisig get_account --account-id EQ...`           |
 | NFT collections, items, history                | `references/nft.md`            | `nft get_collection --account-id EQ...`             |
 | Purchase history                               | `references/purchases.md`      | `purchases get_purchase_history --account-id EQ...` |
 | Token prices, charts, markets                  | `references/rates.md`          | `rates get_rates --tokens ton --currencies usd`     |
+| Validators, validation rounds, rewards, APY    | `references/rewards.md`        | `rewards get_apy`                                   |
 | Staking pools, nominators                      | `references/staking.md`        | `staking get_pools`                                 |
 | TON storage providers                          | `references/storage.md`        | `storage get_providers`                             |
 | Execution traces                               | `references/traces.md`         | `traces get_trace --trace-id ...`                   |

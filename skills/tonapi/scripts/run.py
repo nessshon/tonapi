@@ -153,9 +153,9 @@ def _format_result(result: t.Any) -> str:
     return str(result)
 
 
-def _coerce_list_kwargs(method: t.Callable[..., t.Any], kwargs: dict[str, t.Any]) -> None:
+def _coerce_list_kwargs(method_fn: t.Callable[..., t.Any], kwargs: dict[str, t.Any]) -> None:
     """Wrap single CLI values in a list for parameters annotated as lists."""
-    for name, hint in t.get_type_hints(method).items():
+    for name, hint in t.get_type_hints(method_fn).items():
         value = kwargs.get(name)
         if value is None or isinstance(value, list):
             continue

@@ -9,7 +9,7 @@ Get list of jettons.
 | Param | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
 | limit | int | no | 100 | Max results |
-| offset | int | no | 0 | Pagination offset (deprecated: based on a daily snapshot, prefer `last_account_id`) |
+| offset | int | no | 0 | Pagination offset (deprecated, prefer `last_account_id`) |
 | last_account_id | str \| None | no | None | Cursor: `metadata.address` of the last jetton from the previous page |
 
 Returns: `Jettons`
@@ -63,7 +63,7 @@ Get jetton holders.
 | account_id | str | yes | — | Jetton master address |
 | limit | int | no | 1000 | Max results |
 | offset | int | no | 0 | Pagination offset (only with `sort_by="balance"`, up to 9000 rows) |
-| sort_by | str | no | "balance" | `balance` (top holders) or `address` (unlimited pagination via `last_account_id`) |
+| sort_by | str | no | "balance" | Sort: "balance" (top holders) or "address" (cursor pagination) |
 | last_account_id | str \| None | no | None | Cursor for `sort_by="address"`: `address` of the last holder, not `owner.address` |
 
 Returns: `JettonHolders`

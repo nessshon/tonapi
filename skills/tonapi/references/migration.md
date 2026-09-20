@@ -23,11 +23,11 @@ result = await tonapi.migration.get_wallets(body={"account_ids": ["EQ..."]}, cur
 
 ## prepare_migration
 
-Prepare ordered signable transactions that migrate every asset from `from` to `to` (409 when the source can't cover gas).
+Prepare ordered signable transactions that migrate every asset from `from` to `to`.
 
 | Param | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
-| body | MigrationPrepareRequest | yes | — | Request body model with `from`, `to` and optional gas fields |
+| body | MigrationPrepareRequest | yes | — | Request body with `from`, `to`, and optional gas fields |
 
 Returns: `MigrationPrepareResponse`
 

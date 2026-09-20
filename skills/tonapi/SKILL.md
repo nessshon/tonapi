@@ -3,13 +3,13 @@ name: tonapi
 description: >
   Work with TON blockchain via the tonapi Python SDK — query accounts,
   transactions, jettons, NFTs, staking, validator rewards, DNS, prepare wallet
-  migration, emulate messages, subscribe to
-  real-time events, and manage webhooks. Use this skill whenever the user
-  mentions TONAPI, tonapi.io, TON blockchain data, wallet balance, jetton
-  transfers, NFT collections, or wants to interact with TON via TONAPI.
-  Also use when the user works with code that imports from pytonapi.rest,
-  pytonapi.streaming, pytonapi.webhook, or pytonapi.types, or asks about
-  TONAPI endpoints, even if they don't explicitly mention "pytonapi".
+  migration, emulate messages, subscribe to real-time events, and manage
+  webhooks. Use this skill whenever the user mentions TONAPI, tonapi.io, TON
+  blockchain data, wallet balance, jetton transfers, NFT collections, or wants
+  to interact with TON via TONAPI. Also use when the user works with code that
+  imports from pytonapi.rest, pytonapi.streaming, pytonapi.webhook, or
+  pytonapi.types, or asks about TONAPI endpoints, even if they don't
+  explicitly mention "pytonapi".
 ---
 
 Python SDK for querying TON blockchain via TONAPI. Covers REST API, streaming (SSE/WebSocket), and webhooks with event

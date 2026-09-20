@@ -4,7 +4,7 @@
 
 ## get_validators
 
-Get current validators with stakes, rewards, pool addresses, and nominator breakdowns.
+Get current validators with stakes, rewards, pool addresses, and (optionally) nominator breakdowns.
 
 | Param | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
@@ -28,7 +28,7 @@ Get past and current validation rounds with boundaries, stakes, and bonuses.
 
 | Param | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
-| election_id | int \| None | no | None | Return the single round with this election ID |
+| election_id | int \| None | no | None | Election ID of the single round to return |
 | block | int \| None | no | None | Masterchain block seqno inside the round |
 | unixtime | int \| None | no | None | Unix timestamp to anchor the masterchain block |
 
@@ -48,7 +48,7 @@ Get per-validator and per-nominator reward distribution for a finished validatio
 
 | Param | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
-| election_id | int \| None | no | None | Election ID; exactly one of election_id/block/unixtime is required |
+| election_id | int \| None | no | None | Election ID of the finished round, one of the three is required |
 | block | int \| None | no | None | Masterchain block seqno within the finished round |
 | unixtime | int \| None | no | None | Unix timestamp to anchor the masterchain block |
 | shallow | bool | no | False | Return only basic validator info (significantly faster) |
@@ -65,7 +65,7 @@ result = await tonapi.rewards.get_round_rewards(election_id=1700000000, shallow=
 
 ## get_stats
 
-Get APY and total stake time series from past validation rounds (`apy` is a fraction here, `get_apy` returns percent).
+Get APY and total stake time series from past validation rounds (`apy` here is a fraction, not percent).
 
 Returns: `RewardsStats`
 
